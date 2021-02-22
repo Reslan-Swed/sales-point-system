@@ -2,7 +2,7 @@ package com.management.salessystem.domain
 
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import groovy.transform.Canonical
-import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 
 import javax.persistence.*
 
@@ -13,7 +13,7 @@ class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id
-    @CreationTimestamp
+    @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = 'create_date')
     Date createDate
@@ -27,7 +27,7 @@ class Sale {
     Double total
 
     @PostLoad
-    def calculateTotal() {
+    void calculateTotal() {
         total = entries*.price.sum() as Double
     }
 }

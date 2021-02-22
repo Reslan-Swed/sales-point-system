@@ -1,11 +1,13 @@
 package com.management.salessystem.service
 
 import com.management.salessystem.domain.Product
+import com.management.salessystem.request.CreateProductRequest
+import com.management.salessystem.request.UpdateProductRequest
 
 interface ProductService {
-    Product createNewProduct(Product product)
+    void createNewProduct(CreateProductRequest request)
 
-    Product updateExistProduct(Long id, Product replacementProduct)
+    void updateExistProduct(Long id, UpdateProductRequest request)
 
     List<Product> getAllProducts()
 }

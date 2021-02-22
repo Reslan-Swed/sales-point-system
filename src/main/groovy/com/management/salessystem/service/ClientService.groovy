@@ -1,11 +1,13 @@
 package com.management.salessystem.service
 
 import com.management.salessystem.domain.Client
+import com.management.salessystem.request.CreateClientRequest
+import com.management.salessystem.request.UpdateClientRequest
 
 interface ClientService {
-    Client createNewClient(Client client)
+    void createNewClient(CreateClientRequest request)
 
-    Client updateExistClient(Long id, Client replacementClient)
+    void updateExistClient(Long id, UpdateClientRequest request)
 
     List<Client> getAllClients()
 }

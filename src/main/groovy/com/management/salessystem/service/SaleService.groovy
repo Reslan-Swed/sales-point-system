@@ -1,13 +1,13 @@
 package com.management.salessystem.service
 
 import com.management.salessystem.domain.Sale
-import com.management.salessystem.domain.SaleEntry
-import com.management.salessystem.domain.Seller
+import com.management.salessystem.request.CreateSaleRequest
+import com.management.salessystem.request.UpdateSaleEntryRequest
 
 interface SaleService {
-    Sale createNewSale(Seller seller, List<SaleEntry> entries)
+    void createNewSale(CreateSaleRequest request)
 
-    Sale updateExistSaleEntry(Long id, SaleEntry replacementSaleEntry)
+    void updateExistSaleEntry(Long id, UpdateSaleEntryRequest request)
 
     List<Sale> getAllSales()
 }

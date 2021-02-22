@@ -1,27 +1,27 @@
 package com.management.salessystem.domain
 
 import groovy.transform.Canonical
-import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.DynamicUpdate
+import org.hibernate.annotations.UpdateTimestamp
 
 import javax.persistence.*
-import javax.validation.constraints.NotEmpty
 
 @Canonical
 @Entity
+@DynamicUpdate
 @Table(name = 'products')
 class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     Long id
-    @NotEmpty(message = "Please specify product's name")
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     String name
     @Column
     String description
-    @CreationTimestamp
+    @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = 'create_date', nullable = false)
+    @Column(name = 'create_date')
     Date createDate
     @ManyToOne
     @JoinColumn(name = 'category_id', nullable = false)

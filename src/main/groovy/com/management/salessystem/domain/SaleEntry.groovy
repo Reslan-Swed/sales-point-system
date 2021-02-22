@@ -2,14 +2,15 @@ package com.management.salessystem.domain
 
 import com.fasterxml.jackson.annotation.JsonBackReference
 import groovy.transform.Canonical
+import org.hibernate.annotations.DynamicUpdate
 
 import javax.persistence.*
-import javax.validation.constraints.Pattern
 
 @Canonical
 @Entity
+@DynamicUpdate
 @Table(name = 'sale_entries')
-class SaleEntry {
+class SaleEntry implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id
@@ -20,10 +21,8 @@ class SaleEntry {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = 'sale_id', nullable = false)
     Sale sale
-    @Pattern(regexp = '^[1-9]\\d*$', message = 'Please specify a valid price')
     @Column(nullable = false)
     Double price
-    @Pattern(regexp = '^[1-9]\\d*$', message = 'Please specify a valid quantity')
     @Column(nullable = false)
     Long quantity
 }

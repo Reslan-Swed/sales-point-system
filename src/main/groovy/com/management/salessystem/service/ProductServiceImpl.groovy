@@ -1,8 +1,11 @@
 package com.management.salessystem.service
 
+import com.management.salessystem.domain.Category
 import com.management.salessystem.domain.Product
 import com.management.salessystem.repository.CategoryRepository
 import com.management.salessystem.repository.ProductRepository
+import com.management.salessystem.request.CreateProductRequest
+import com.management.salessystem.request.UpdateProductRequest
 import org.springframework.stereotype.Service
 import org.springframework.util.Assert
 
@@ -18,27 +21,31 @@ class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    Product createNewProduct(Product product) {
-        Assert.notNull(product, 'Product must be specified')
-        Assert.notNull(product.category?.id, 'Category id must be specified')
-        Assert.notNull(categoryRepository.findById(product.category.id).orElse(null), "Specified category with id of $id not found")
+    void createNewProduct(CreateProductRequest request) {
+        final category = checkCategory(request.categoryId)
+        final product = new Product(name: request.name, description: request.description, category: category)
         productRepository.save(product)
     }
 
     @Override
-    Product updateExistProduct(Long id, Product replacementProduct) {
-        Assert.notNull(id, "Product id must be specified")
-        Assert.notNull(replacementProduct, "Replacement product must be specified")
-        Assert.notNull(productRepository.findById(id).orElse(null), "Specified product with id of $id not found")
-        Assert.notNull(replacementProduct.category?.id, 'Category id must be specified')
-        Assert.notNull(categoryRepository.findById(replacementProduct.category.id).orElse(null), "Specified category with id of ${replacementProduct.category.id} not found")
-        final newProduct = new Product(id: id, name: replacementProduct.name, description: replacementProduct.description,
-                category: replacementProduct.category)
-        productRepository.save(newProduct)
+    void updateExistProduct(Long id, UpdateProductRequest request) {
+        Assert.notNull(id, "Product's id must be specified")
+        final oldProduct = productRepository.findById(id).orElse(null)
+        Assert.notNull(oldProduct, "Specified product with id of $id not found")
+        final category = request.categoryId != null ? checkCategory(request.categoryId) : null
+        final product = new Product(id: id, name: request.name ?: oldProduct.name,
+                description: request.description ?: oldProduct.description, category: category ?: oldProduct.category)
+        productRepository.save(product)
     }
 
     @Override
     List<Product> getAllProducts() {
         productRepository.findAll().toList()
+    }
+
+    private Category checkCategory(Long id) {
+        final category = categoryRepository.findById(id).orElse(null)
+        Assert.notNull(category, "Specified category with id of $id not found")
+        category
     }
 }
