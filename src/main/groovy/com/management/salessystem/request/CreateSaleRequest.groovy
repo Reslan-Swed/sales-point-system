@@ -1,5 +1,6 @@
 package com.management.salessystem.request
 
+import com.management.salessystem.repository.ClientRepository
 import com.management.salessystem.repository.ProductRepository
 import com.management.salessystem.repository.SellerRepository
 import com.management.salessystem.validator.CheckEntity
@@ -20,6 +21,10 @@ class CreateSaleRequest implements Serializable {
     @PositiveOrZero(message = "Seller's id must be a valid positive number or zero")
     @CheckEntity(repository = SellerRepository.class, message = "Seller's id not exist", groups = SecondaryValidator.class)
     Long sellerId
+    @NotNull(message = "Please specify client's id")
+    @PositiveOrZero(message = "Client's id must be a valid positive number or zero")
+    @CheckEntity(repository = ClientRepository.class, message = "Client's id not exist", groups = SecondaryValidator.class)
+    Long clientId
     @Valid
     @NotEmpty(message = "Please specify sale's entries list")
     List<ProductItem> entries

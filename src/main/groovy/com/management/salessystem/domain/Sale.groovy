@@ -20,6 +20,9 @@ class Sale {
     @ManyToOne
     @JoinColumn(name = 'seller_id', nullable = false)
     Seller seller
+    @ManyToOne
+    @JoinColumn(name = 'client_id', nullable = false)
+    Client client
     @JsonManagedReference
     @OneToMany(mappedBy = 'sale', cascade = CascadeType.ALL)
     List<SaleEntry> entries

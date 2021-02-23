@@ -4,6 +4,7 @@ import com.management.salessystem.aop.Logging
 import com.management.salessystem.domain.Product
 import com.management.salessystem.domain.Sale
 import com.management.salessystem.domain.SaleEntry
+import com.management.salessystem.repository.ClientRepository
 import com.management.salessystem.repository.SaleEntryRepository
 import com.management.salessystem.repository.SaleRepository
 import com.management.salessystem.repository.SellerRepository
@@ -21,10 +22,13 @@ class SaleServiceImpl implements SaleService {
 
     private SellerRepository sellerRepository
 
-    SaleServiceImpl(SaleRepository saleRepository, SaleEntryRepository saleEntryRepository, SellerRepository sellerRepository) {
+    private ClientRepository clientRepository
+
+    SaleServiceImpl(SaleRepository saleRepository, SaleEntryRepository saleEntryRepository, SellerRepository sellerRepository, ClientRepository clientRepository) {
         this.saleRepository = saleRepository
         this.saleEntryRepository = saleEntryRepository
         this.sellerRepository = sellerRepository
+        this.clientRepository = clientRepository
     }
 
     @Transactional
@@ -32,7 +36,9 @@ class SaleServiceImpl implements SaleService {
     void createNewSale(CreateSaleRequest request) {
         final seller = sellerRepository.findById(request.sellerId).orElse(null)
         Assert.notNull(seller, "Specified seller with id of ${request.sellerId} not found")
-        final sale = saleRepository.save(new Sale(seller: seller))
+        final client = clientRepository.findById(request.clientId).orElse(null)
+        Assert.notNull(seller, "Specified client with id of ${request.clientId} not found")
+        final sale = saleRepository.save(new Sale(seller: seller, client: client))
         request.entries.forEach {
             final product = new Product(id: it.productId)
             saleEntryRepository.save(new SaleEntry(sale: sale, product: product, price: it.price, quantity: it.quantity))
