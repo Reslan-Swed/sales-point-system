@@ -1,5 +1,6 @@
 package com.management.salessystem.service
 
+import com.management.salessystem.aop.Logging
 import com.management.salessystem.domain.Product
 import com.management.salessystem.domain.Sale
 import com.management.salessystem.domain.SaleEntry
@@ -38,6 +39,7 @@ class SaleServiceImpl implements SaleService {
         }
     }
 
+    @Logging
     @Override
     void updateExistSaleEntry(Long id, UpdateSaleEntryRequest request) {
         Assert.notNull(id, "Sale's id must be specified")

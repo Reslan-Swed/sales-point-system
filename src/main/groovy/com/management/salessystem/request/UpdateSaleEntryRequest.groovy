@@ -23,4 +23,9 @@ class UpdateSaleEntryRequest implements Serializable {
     Double price
     @Positive(message = 'Please specify a valid entry quantity')
     Long quantity
+
+    @Override
+    String toString() {
+        "UpdateSaleEntryRequest{${properties.findAll { key, value -> value != null && key != 'class' }.collect { name, value -> "$name: $value" }.join(',')}}"
+    }
 }
