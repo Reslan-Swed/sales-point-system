@@ -5,9 +5,9 @@ import com.management.salessystem.request.CreateProductRequest
 import com.management.salessystem.request.UpdateProductRequest
 
 interface ProductService {
-    void createNewProduct(CreateProductRequest request)
+    Product createNewProduct(CreateProductRequest request)
 
-    void updateExistProduct(Long id, UpdateProductRequest request)
+    Product updateExistProduct(Product product, UpdateProductRequest request)
 
     List<Product> getAllProducts()
 }

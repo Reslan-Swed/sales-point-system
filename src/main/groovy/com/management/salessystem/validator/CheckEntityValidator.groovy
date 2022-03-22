@@ -1,7 +1,5 @@
 package com.management.salessystem.validator
 
-
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.data.repository.CrudRepository
 
@@ -9,12 +7,13 @@ import javax.validation.ConstraintValidator
 import javax.validation.ConstraintValidatorContext
 
 class CheckEntityValidator implements ConstraintValidator<CheckEntity, Object> {
-    @Autowired
     private ApplicationContext context
-
-    private Class repository
-
+    private Class<CrudRepository> repository
     private boolean exists
+
+    CheckEntityValidator(ApplicationContext context) {
+        this.context = context
+    }
 
     @Override
     void initialize(CheckEntity constraintAnnotation) {

@@ -1,6 +1,7 @@
 package com.management.salessystem.domain
 
-import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.management.salessystem.extra.SaleSerializer
 import groovy.transform.Canonical
 import org.hibernate.annotations.DynamicUpdate
 
@@ -17,7 +18,7 @@ class SaleEntry implements Serializable {
     @ManyToOne
     @JoinColumn(name = 'product_id', nullable = false)
     Product product
-    @JsonBackReference
+    @JsonSerialize(using = SaleSerializer.class)
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = 'sale_id', nullable = false)
     Sale sale

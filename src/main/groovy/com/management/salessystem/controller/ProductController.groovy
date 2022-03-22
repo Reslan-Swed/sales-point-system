@@ -20,21 +20,24 @@ class ProductController {
     }
 
     @GetMapping
-    List<Product> index() {
-        productService.getAllProducts()
+    SuccessResponse index() {
+        productService.getAllProducts().with {
+            new SuccessResponse(data: it)
+        }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     SuccessResponse store(@Valid @RequestBody CreateProductRequest request) {
-        productService.createNewProduct(request)
-        new SuccessResponse(message: 'Product created successfully')
+        productService.createNewProduct(request).with {
+            new SuccessResponse(message: 'Product created successfully', data: it)
+        }
     }
 
     @PutMapping('/{id}')
-    @ResponseStatus(HttpStatus.OK)
-    SuccessResponse update(@PathVariable('id') Long id, @Valid @RequestBody UpdateProductRequest request) {
-        productService.updateExistProduct(id, request)
-        new SuccessResponse(message: 'Product updated successfully')
+    SuccessResponse update(@PathVariable('id') Product product, @Valid @RequestBody UpdateProductRequest request) {
+        productService.updateExistProduct(product, request).with {
+            new SuccessResponse(message: 'Product updated successfully', data: it)
+        }
     }
 }

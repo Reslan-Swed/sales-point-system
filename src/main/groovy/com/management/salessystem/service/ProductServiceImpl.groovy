@@ -21,20 +21,21 @@ class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    void createNewProduct(CreateProductRequest request) {
+    Product createNewProduct(CreateProductRequest request) {
         final category = checkCategory(request.categoryId)
-        final product = new Product(name: request.name, description: request.description, category: category)
-        productRepository.save(product)
+        new Product(name: request.name, description: request.description, category: category).with {
+            productRepository.save(it)
+        }
     }
 
     @Override
-    void updateExistProduct(Long id, UpdateProductRequest request) {
-        Assert.notNull(id, "Product's id must be specified")
-        final oldProduct = productRepository.findById(id).orElse(null)
-        Assert.notNull(oldProduct, "Specified product with id of $id not found")
-        final category = request.categoryId != null ? checkCategory(request.categoryId) : null
-        final product = new Product(id: id, name: request.name ?: oldProduct.name,
-                description: request.description ?: oldProduct.description, category: category ?: oldProduct.category)
+    Product updateExistProduct(Product product, UpdateProductRequest request) {
+        final newCategory = request.categoryId != null ? checkCategory(request.categoryId) : null
+        product.tap {
+            name = request.name ?: name
+            description = request.description ?: description
+            category = newCategory ?: category
+        }
         productRepository.save(product)
     }
 

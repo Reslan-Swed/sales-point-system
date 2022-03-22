@@ -1,6 +1,6 @@
 package com.management.salessystem.controller
 
-
+import com.management.salessystem.domain.Product
 import com.management.salessystem.domain.Sale
 import com.management.salessystem.request.CreateSaleRequest
 import com.management.salessystem.request.UpdateSaleEntryRequest
@@ -21,21 +21,25 @@ class SaleController {
     }
 
     @GetMapping
-    List<Sale> index() {
-        saleService.getAllSales()
+    SuccessResponse index() {
+        saleService.getAllSales().with {
+            new SuccessResponse(data: it)
+        }
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     SuccessResponse store(@Valid @RequestBody CreateSaleRequest request) {
-        saleService.createNewSale(request)
-        new SuccessResponse(message: 'Sale created successfully')
+        saleService.createNewSale(request).with {
+            new SuccessResponse(message: 'Sale created successfully', data: it)
+        }
     }
 
-    @PutMapping('/{id}')
+    @PutMapping('/{id}/products/{productId}')
     @ResponseStatus(HttpStatus.OK)
-    SuccessResponse update(@PathVariable('id') Long id, @Valid @RequestBody UpdateSaleEntryRequest request) {
-        saleService.updateExistSaleEntry(id, request)
-        new SuccessResponse(message: 'Sale entry updated successfully')
+    SuccessResponse update(@PathVariable('id') Sale sale, @PathVariable('productId') Product product, @Valid @RequestBody UpdateSaleEntryRequest request) {
+        saleService.updateExistedSaleEntry(sale, product, request).with {
+            new SuccessResponse(message: 'Sale entry updated successfully', data: it)
+        }
     }
 }

@@ -33,29 +33,29 @@ class SaleServiceImpl implements SaleService {
 
     @Transactional
     @Override
-    void createNewSale(CreateSaleRequest request) {
+    Sale createNewSale(CreateSaleRequest request) {
         final seller = sellerRepository.findById(request.sellerId).orElse(null)
         Assert.notNull(seller, "Specified seller with id of ${request.sellerId} not found")
         final client = clientRepository.findById(request.clientId).orElse(null)
-        Assert.notNull(seller, "Specified client with id of ${request.clientId} not found")
-        final sale = saleRepository.save(new Sale(seller: seller, client: client))
-        request.entries.forEach {
-            final product = new Product(id: it.productId)
-            saleEntryRepository.save(new SaleEntry(sale: sale, product: product, price: it.price, quantity: it.quantity))
+        Assert.notNull(client, "Specified client with id of ${request.clientId} not found")
+        saleRepository.saveAndFlush(new Sale(seller: seller, client: client)).tap {
+            sale -> request.entries.forEach {
+                final product = new Product(id: it.productId)
+                sale.entries.push(new SaleEntry(sale: sale, product: product, price: it.price, quantity: it.quantity))
+            }
         }
     }
 
     @Logging
     @Override
-    void updateExistSaleEntry(Long id, UpdateSaleEntryRequest request) {
-        Assert.notNull(id, "Sale's id must be specified")
-        final sale = saleRepository.findById(id).orElse(null)
-        Assert.notNull(sale, "Specified sale with id of $id not found")
-        final oldSaleEntry = saleEntryRepository.findBySaleIdAndProductId(id, request.productId).orElse(null)
-        Assert.notNull(oldSaleEntry, "Specified sale entry of product with id of ${request.productId} not found")
-        final saleEntry = new SaleEntry(id: oldSaleEntry.id, product: oldSaleEntry.product,
-                sale: sale, price: request.price ?: oldSaleEntry.price, quantity: request.quantity ?: oldSaleEntry.quantity)
-        saleEntryRepository.save(saleEntry)
+    SaleEntry updateExistedSaleEntry(Sale sale, Product product, UpdateSaleEntryRequest request) {
+        final saleEntry = saleEntryRepository.findBySaleAndProduct(sale, product).orElse(null)
+        Assert.notNull(saleEntry, "Specified sale entry of product with id of ${request.productId} not found")
+        saleEntry.tap {
+            price = request.price ?: price
+            quantity = request.quantity ?: quantity
+            saleEntryRepository.save(it)
+        }
     }
 
     @Override

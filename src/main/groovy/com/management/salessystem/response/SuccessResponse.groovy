@@ -5,5 +5,6 @@ import groovy.transform.Canonical
 @Canonical
 class SuccessResponse {
     private Date timestamp = new Date()
-    String message
+    String message = 'Success'
+    Object data = [:]
 }

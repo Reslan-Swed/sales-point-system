@@ -1,6 +1,8 @@
 package com.management.salessystem.domain
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.management.salessystem.extra.SaleEntrySerializer
 import groovy.transform.Canonical
 import org.hibernate.annotations.UpdateTimestamp
 
@@ -23,9 +25,9 @@ class Sale {
     @ManyToOne
     @JoinColumn(name = 'client_id', nullable = false)
     Client client
-    @JsonManagedReference
+    @JsonSerialize(using = SaleEntrySerializer.class)
     @OneToMany(mappedBy = 'sale', cascade = CascadeType.ALL)
-    List<SaleEntry> entries
+    List<SaleEntry> entries = []
     @Transient
     Double total
 

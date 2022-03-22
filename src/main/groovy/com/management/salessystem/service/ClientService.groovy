@@ -5,9 +5,9 @@ import com.management.salessystem.request.CreateClientRequest
 import com.management.salessystem.request.UpdateClientRequest
 
 interface ClientService {
-    void createNewClient(CreateClientRequest request)
+    Client createNewClient(CreateClientRequest request)
 
-    void updateExistClient(Long id, UpdateClientRequest request)
+    Client updateExistClient(Client client, UpdateClientRequest request)
 
     List<Client> getAllClients()
 }

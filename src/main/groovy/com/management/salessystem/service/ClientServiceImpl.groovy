@@ -16,18 +16,19 @@ class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    void createNewClient(CreateClientRequest request) {
-        final client = new Client(name: request.name, lastName: request.lastName, mobile: request.mobile)
-        clientRepository.save(client)
+    Client createNewClient(CreateClientRequest request) {
+        new Client(name: request.name, lastName: request.lastName, mobile: request.mobile).with {
+            clientRepository.save(it)
+        }
     }
 
     @Override
-    void updateExistClient(Long id, UpdateClientRequest request) {
-        Assert.notNull(id, "Client's id must be specified")
-        final oldClient = clientRepository.findById(id).orElse(null)
-        Assert.notNull(oldClient, "Specified client with id of $id not found")
-        final client = new Client(id: id, name: request.name ?: oldClient.name,
-                lastName: request.lastName ?: oldClient.lastName, mobile: request.mobile ?: oldClient.mobile)
+    Client updateExistClient(Client client, UpdateClientRequest request) {
+        client.tap {
+            name = request.name ?: name
+            lastName = request.lastName ?: lastName
+            mobile = request.mobile ?: mobile
+        }
         clientRepository.save(client)
     }
 
